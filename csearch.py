@@ -60,7 +60,7 @@ class CsearchCommand(sublime_plugin.WindowCommand, _CsearchListener):
             view.set_name('Code Search Results')
             view.set_scratch(True)
             settings = view.settings()
-            settings.set('line_numbers', False)
+            settings.set('line_numbers', True)
             settings.set('gutter', False)
             settings.set('spell_check', False)
             view.set_syntax_file(('Packages/YetAnotherCodeSearch/'
@@ -71,11 +71,14 @@ class CsearchCommand(sublime_plugin.WindowCommand, _CsearchListener):
         self._last_search = result
 
         view = self._get_results_view()
-        self._write_message('Searching for "{0}"\n\n'.format(result),
+
+        self._write_message('Searching for "{0}" in {1}\n\n'.format(result, self.window.folders()[0]),
                             view=view, erase=True)
         view.set_status('YetAnotherCodeSearch', 'Searching...')
+        self._write_message(self.window.folders())
         try:
-            s = settings.get_project_settings(self.window.project_data(),
+            s = settings.get_project_settings(self.window.folders()[0] + '/.csearchindex',
+                                              self.window.project_data(),
                                               self.window.project_file_name())
             _CsearchThread(parser.parse_query(result), self,
                            path_csearch=s.csearch_path,
@@ -164,7 +167,7 @@ def fix_windows_output(output):
 
 
 class _CsearchThread(threading.Thread):
-    """Runs the csearch command in a thread."""
+    """Runs the csearch command in a separate process."""
 
     def __init__(self, search, listener, path_csearch='csearch',
                  index_filename=None):
