@@ -33,7 +33,7 @@ class CsearchCommand(sublime_plugin.WindowCommand, _CsearchListener):
     def __init__(self, *args, **kwargs):
         super(CsearchCommand, self).__init__(*args, **kwargs)
         self._is_running = False
-        self._last_search = 'file:* case:yes "'
+        self._last_search = ''
 
     def run(self, query=None):
         """Runs the search command.
