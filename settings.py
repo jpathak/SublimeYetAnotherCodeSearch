@@ -76,10 +76,7 @@ def get_project_settings(project_data,
     project_dir = None
     if project_file_name:
         project_dir = os.path.dirname(project_file_name)
-    if ('code_search' in project_data):
-        if 'csearchindex' in project_data['code_search']:
-            index_filename = fix_path(
-                project_data['code_search']['csearchindex'], project_dir)
+    index_filename = fix_path('.csearchindex', project_dir)
 
     if index_project_folders:
         paths_to_index = [fix_path(folder['path'], project_dir)
